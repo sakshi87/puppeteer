@@ -24,6 +24,7 @@ export class EventEmitter implements CommonEventEmitter {
   }
 
   on(event: EventType, handler: mitt.Handler): void {
+    // TODO: once we're on the new Mitt we don't need the as string coercion
     this.emitter.on(event as string, handler);
     const existingCounts = this.listenerCounts.get(event);
     if (existingCounts) {
@@ -34,6 +35,7 @@ export class EventEmitter implements CommonEventEmitter {
   }
 
   off(event: EventType, handler: mitt.Handler): void {
+    // TODO: once we're on the new Mitt we don't need the as string coercion
     this.emitter.off(event as string, handler);
 
     const existingCounts = this.listenerCounts.get(event);
@@ -45,6 +47,7 @@ export class EventEmitter implements CommonEventEmitter {
   }
 
   emit(event: EventType, eventData?: any): void {
+    // TODO: once we're on the new Mitt we don't need the as string coercion
     this.emitter.emit(event as string, eventData);
   }
 
