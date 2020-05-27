@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import { TimeoutError } from './Errors';
-import * as debug from 'debug';
+import debug from 'debug';
 import * as fs from 'fs';
 import { CDPSession } from './Connection';
 import { promisify } from 'util';

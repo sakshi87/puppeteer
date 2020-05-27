@@ -15,7 +15,7 @@
  */
 import { assert } from './helper';
 import { Events } from './Events';
-import * as debug from 'debug';
+import debug from 'debug';
 const debugProtocol = debug('puppeteer:protocol');
 
 import Protocol from './protocol';

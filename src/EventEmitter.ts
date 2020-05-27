@@ -1,31 +1,33 @@
-import * as mitt from 'mitt';
+import mitt from 'mitt';
+import type { Emitter } from 'mitt';
 
 type EventType = string | symbol;
 
+type Handler = (eventData?: any) => void;
+
 export interface CommonEventEmitter {
-  on(event: EventType, handler: mitt.Handler): void;
-  off(event: EventType, handler: mitt.Handler): void;
+  on(event: EventType, handler: Handler): void;
+  off(event: EventType, handler: Handler): void;
   /* To maintain parity with the built in NodeJS event emitter which uses removeListener
    * rather than `off`.
    * if you're implementing new code you should use off
    */
-  removeListener(event: EventType, handler: mitt.Handler): void;
+  removeListener(event: EventType, handler: Handler): void;
   emit(event: EventType, eventData?: any): void;
-  once(event: EventType, handler: mitt.Handler): void;
+  once(event: EventType, handler: Handler): void;
   listenerCount(event: string): number;
 }
 
 export class EventEmitter implements CommonEventEmitter {
-  private emitter: mitt.Emitter;
+  private emitter: Emitter;
   private listenerCounts = new Map<EventType, number>();
 
   constructor() {
-    this.emitter = mitt();
+    this.emitter = mitt(new Map());
   }
 
-  on(event: EventType, handler: mitt.Handler): void {
-    // TODO: once we're on the new Mitt we don't need the as string coercion
-    this.emitter.on(event as string, handler);
+  on(event: EventType, handler: Handler): void {
+    this.emitter.on(event, handler);
     const existingCounts = this.listenerCounts.get(event);
     if (existingCounts) {
       this.listenerCounts.set(event, existingCounts + 1);
@@ -34,25 +36,23 @@ export class EventEmitter implements CommonEventEmitter {
     }
   }
 
-  off(event: EventType, handler: mitt.Handler): void {
-    // TODO: once we're on the new Mitt we don't need the as string coercion
-    this.emitter.off(event as string, handler);
+  off(event: EventType, handler: Handler): void {
+    this.emitter.off(event, handler);
 
     const existingCounts = this.listenerCounts.get(event);
     this.listenerCounts.set(event, existingCounts - 1);
   }
 
-  removeListener(event: EventType, handler: mitt.Handler): void {
+  removeListener(event: EventType, handler: Handler): void {
     this.off(event, handler);
   }
 
   emit(event: EventType, eventData?: any): void {
-    // TODO: once we're on the new Mitt we don't need the as string coercion
-    this.emitter.emit(event as string, eventData);
+    this.emitter.emit(event, eventData);
   }
 
-  once(event: EventType, handler: mitt.Handler): void {
-    const onceHandler: mitt.Handler = (eventData) => {
+  once(event: EventType, handler: Handler): void {
+    const onceHandler: Handler = (eventData) => {
       handler(eventData);
       this.off(event, onceHandler);
     };

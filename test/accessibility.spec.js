@@ -21,7 +21,7 @@ const {
   setupTestPageAndContextHooks,
 } = require('./mocha-utils');
 
-describeFailsFirefox('Accessibility', function () {
+describe.only('Accessibility', function () {
   setupTestBrowserHooks();
   setupTestPageAndContextHooks();
 
